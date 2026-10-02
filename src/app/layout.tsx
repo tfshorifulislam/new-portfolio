@@ -83,18 +83,12 @@ const RootLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
       className={`${GeistSans.variable} ${GeistMono.variable}`}
     >
       <head>
-        {/* Without this, the initial system-theme flip animates through every element's own
-            transition-* and reads as a flicker. globals.css suppresses transitions until
-            `theme-ready`; blocking and in <head> so no unguarded frame exists. */}
         <script
           dangerouslySetInnerHTML={{
             __html:
               "requestAnimationFrame(function(){document.documentElement.classList.add('theme-ready')})",
           }}
         />
-        {/* Applies the stored palette before paint, or the page shows the default for a frame
-            and snaps. The default is the ABSENCE of the attribute, hence no else branch. Key
-            duplicates PALETTE_STORAGE_KEY in lib/palettes.ts. */}
         <script
           dangerouslySetInnerHTML={{
             __html:

@@ -35,9 +35,7 @@ const Projects = nextDynamic(() =>
 const Services = nextDynamic(() =>
   import("@/components/home/Services").then((m) => ({ default: m.Services })),
 );
-const Support = nextDynamic(() =>
-  import("@/components/home/Support").then((m) => ({ default: m.Support })),
-);
+
 const Contact = nextDynamic(() =>
   import("@/components/home/Contact").then((m) => ({ default: m.Contact })),
 );
@@ -72,7 +70,7 @@ export default async function Home() {
   const sponsorUrl = funding.find((f) => f.primary)?.url;
 
   return (
-    <div className="max-w-[1680px] mx-auto">
+    <div className="max-w-[1920px] mx-auto">
       <SiteNav
         tagline={tagline}
         socials={socials.map((s) => ({ platform: s.platform, url: s.url }))}
@@ -102,8 +100,6 @@ export default async function Home() {
       <Projects projects={projects} />
 
       <Services services={services} />
-
-      <Support funding={funding} />
 
       <Faq />
 

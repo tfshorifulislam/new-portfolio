@@ -7,11 +7,26 @@ import type { ContributionCalendar } from "@/content/types";
 import { cn } from "@/utils/cn";
 
 // Weeks run horizontally and days stack Sunday-first, like GitHub's calendar.
-// 13px cells with a 3px gap are repeated by the month row, the weekday column and
-// the cells themselves, so both axes line up with no measurement at runtime.
+// One CSS grid holds the month row, the weekday column and the cells, so all three
+// share a single set of tracks: the weekday labels land on the cell rows and the month
+// labels land on the week columns by construction, with nothing measured at runtime.
+//
+// Track sizes are deliberately fluid. Column 1 is a fixed narrow label gutter and the
+// remaining tracks are 1fr each, so the weeks share whatever width the card has left
+// over and the cells (aspect-square, full track width) grow with it. Below the md
+// breakpoint the grid keeps a floor width - sized from the week count so cells stay
+// legible - and the outer scroller takes over; at md and up there is no floor, so the
+// graph spans the full card content edge to edge with nothing to scroll.
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
-// GitHub labels every other row; all seven would not fit beside 13px cells.
+// GitHub labels every other row; all seven would not fit beside a 23px gutter.
 const LABELLED_ROWS = new Set([1, 3, 5]);
+
+// 18px of label text plus 5px, so with the 3px grid gap the first cell still starts
+// 26px in - the same label-to-cell distance as before the grid was fluid.
+const LABEL_COL = "23px";
+const GAP = "3px";
+// Narrowest a cell may get before the mobile scroller is preferred over shrinking.
+const MIN_CELL = "11px";
 
 const LEVEL_CLASS = [
   "bg-contrib-0",
@@ -92,8 +107,7 @@ export function ContributionHeatmap({ calendar }: { calendar: ContributionCalend
     [calendar.weeks],
   );
 
-  /** Label a week when it is the first week of a new month. Keyed off the week's own
-   *  first day, which stays correct for the partial first and last weeks. */
+
   const monthLabels = useMemo(
     () =>
       calendar.weeks.map((week) => {
@@ -105,8 +119,7 @@ export function ContributionHeatmap({ calendar }: { calendar: ContributionCalend
     [calendar.weeks],
   );
 
-  // One delegated listener rather than ~370: the tooltip needs the hovered cell's
-  // rect, and a handler per cell would be a lot of bookkeeping for a static grid.
+
   const onPointerMove = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
     const cell = (event.target as HTMLElement).closest<HTMLElement>("[data-day]");
     if (!cell) {
@@ -117,15 +130,13 @@ export function ContributionHeatmap({ calendar }: { calendar: ContributionCalend
     if (!day || count === undefined) return;
 
     const rect = cell.getBoundingClientRect();
-    // The bubble is much wider than a cell and the grid scrolls, so the hovered
-    // cell can sit against either edge: keep the bubble inside the viewport.
+
     const margin = 96;
     setTooltip({
       date: day,
       count: Number(count),
       x: Math.min(Math.max(rect.left + rect.width / 2, margin), window.innerWidth - margin),
       y: rect.top,
-      // Flip below the cell rather than off the top of the page.
       below: rect.top < 72,
     });
   }, []);
@@ -143,63 +154,72 @@ export function ContributionHeatmap({ calendar }: { calendar: ContributionCalend
             : "GitHub contribution calendar"
         }
       >
-        {/* Horizontal scroll rather than shrinking: 13px cells stay legible and
-            tappable, and only this element scrolls, so the page never overflows. */}
+
         <div
           className="overflow-x-auto pb-1"
           onPointerMove={onPointerMove}
           onPointerLeave={() => setTooltip(null)}
         >
-          <div className="min-w-max">
-            <div className="mb-1.5 flex gap-[3px]">
-              {calendar.weeks.map((week, index) => (
+          <div
+            style={
+              {
+                "--weeks": calendar.weeks.length,
+                "--label-col": LABEL_COL,
+                "--gap": GAP,
+                "--min-cell": MIN_CELL,
+              } as React.CSSProperties
+            }
+            className="grid grid-cols-[var(--label-col)_repeat(var(--weeks),minmax(0,1fr))] gap-[var(--gap)] min-w-[calc(var(--label-col)+var(--weeks)*var(--min-cell)+(var(--weeks)-1)*var(--gap))] md:min-w-0"
+          >
+            {/* Row 1: month labels, each pinned to the start of the week column it opens. */}
+            {calendar.weeks.map((week, index) => (
+              <div
+                key={week.contributionDays[0]?.date ?? index}
+                style={{ gridRow: 1, gridColumn: index + 2 }}
+                className="relative h-3"
+              >
+                {monthLabels[index] &&
+                  monthLabels[index]?.key !== monthLabels[index - 1]?.key &&
+                  calendar.weeks.length - index >= 3 && (
+                    <span className="text-muted absolute top-0 left-0 font-mono text-[10px] leading-none whitespace-nowrap">
+                      {monthLabels[index]?.label}
+                    </span>
+                  )}
+              </div>
+            ))}
+
+            {/* Column 1: weekday labels on rows 2-8, the same rows the cells occupy.
+                h-0 + self-center keeps the label out of track sizing entirely: an auto
+                row would otherwise be floored by the 10px line box and come out taller
+                than the cells. With a definite zero height the label contributes nothing,
+                so the rows stay uniform and square-driven, and self-center still puts the
+                text on its row's centre line. It overflows into the neighbouring row,
+                which is always unlabelled. */}
+            {WEEKDAYS.map((weekday, row) => (
+              <span
+                key={weekday}
+                style={{ gridRow: row + 2, gridColumn: 1 }}
+                className="text-muted flex h-0 self-center items-center font-mono text-[10px] leading-none"
+              >
+                {LABELLED_ROWS.has(row) ? weekday : null}
+              </span>
+            ))}
+
+            {/* Rows 2-8: the cells themselves. */}
+            {calendar.weeks.map((week, weekIndex) =>
+              week.contributionDays.map((day, dayIndex) => (
                 <div
-                  key={week.contributionDays[0]?.date ?? index}
-                  className="relative h-3 w-[13px] shrink-0"
-                >
-                  {/* One label per new month, and never one so close to the right
-                      edge that it would be clipped by the scroller. */}
-                  {monthLabels[index] &&
-                    monthLabels[index]?.key !== monthLabels[index - 1]?.key &&
-                    calendar.weeks.length - index >= 3 && (
-                      <span className="text-muted absolute top-0 left-0 font-mono text-[10px] leading-none whitespace-nowrap">
-                        {monthLabels[index]?.label}
-                      </span>
-                    )}
-                </div>
-              ))}
-            </div>
-
-            <div className="flex gap-2">
-              <div className="flex shrink-0 flex-col gap-[3px]">
-                {WEEKDAYS.map((weekday, row) => (
-                  <span
-                    key={weekday}
-                    className="text-muted flex h-[13px] items-center font-mono text-[10px] leading-none"
-                  >
-                    {LABELLED_ROWS.has(row) ? weekday : null}
-                  </span>
-                ))}
-              </div>
-
-              <div className="flex gap-[3px]">
-                {calendar.weeks.map((week, weekIndex) => (
-                  <div key={weekIndex} className="flex flex-col gap-[3px]">
-                    {week.contributionDays.map((day) => (
-                      <div
-                        key={day.date}
-                        data-day={day.date}
-                        data-count={day.contributionCount}
-                        className={cn(
-                          "hover:ring-foreground/50 size-[13px] rounded-[3px] transition-shadow duration-150 hover:ring-1",
-                          LEVEL_CLASS[contributionLevel(day.contributionCount, scale)],
-                        )}
-                      />
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
+                  key={day.date}
+                  data-day={day.date}
+                  data-count={day.contributionCount}
+                  style={{ gridRow: dayIndex + 2, gridColumn: weekIndex + 2 }}
+                  className={cn(
+                    "hover:ring-foreground/50 aspect-square w-full rounded-[3px] transition-shadow duration-150 hover:ring-1",
+                    LEVEL_CLASS[contributionLevel(day.contributionCount, scale)],
+                  )}
+                />
+              )),
+            )}
           </div>
         </div>
       </div>
@@ -216,9 +236,7 @@ export function ContributionHeatmap({ calendar }: { calendar: ContributionCalend
         </span>
       </div>
 
-      {/* Portalled to the body on purpose: the graph sits inside a Card with
-          backdrop-blur and inside a Reveal with a transform, and either one
-          becomes the containing block for a position:fixed descendant. */}
+
       {tooltip &&
         createPortal(
           <div
