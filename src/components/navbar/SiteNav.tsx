@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { Github } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -100,6 +101,17 @@ export function SiteNav({
 
           <span className="relative z-10 flex items-center gap-2">
             <AppearanceMenu />
+            {/* Matches the appearance trigger's box, colour and hover exactly, so the two
+                read as one control cluster. Inherits the parent's gap-2 spacing. */}
+            <a
+              href="https://github.com/tfshorifulislam"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+              className="text-foreground/80 hover:bg-foreground/10 hover:text-foreground grid size-9 place-items-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--brand-deep)"
+            >
+              <Github className="size-[18px]" aria-hidden />
+            </a>
             <Magnetic>
               <button
                 type="button"
