@@ -91,7 +91,6 @@ export default async function Home() {
         }}
       />
 
-      <GithubContributions calendar={contributions} />
 
       <Skills skills={skills} />
 
@@ -103,6 +102,8 @@ export default async function Home() {
 
       <Faq />
 
+      <GithubContributions calendar={contributions} />
+      
       <Contact socials={socials} email={contactEmail} />
 
       <Footer socials={socials} />

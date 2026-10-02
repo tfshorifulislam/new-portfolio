@@ -1,6 +1,4 @@
-// globals.css mirrors these as CSS variables by hand (CSS cannot import TS).
-// Consumers that cannot read a CSS variable import from here instead:
-// opengraph-image, manifest, global-error.
+
 
 export const BRAND = {
   deep: "#3730a3",
