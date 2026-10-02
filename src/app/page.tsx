@@ -100,10 +100,12 @@ export default async function Home() {
 
       <Services services={services} />
 
+      <GithubContributions calendar={contributions} />
+
+      
       <Faq />
 
-      <GithubContributions calendar={contributions} />
-      
+
       <Contact socials={socials} email={contactEmail} />
 
       <Footer socials={socials} />
