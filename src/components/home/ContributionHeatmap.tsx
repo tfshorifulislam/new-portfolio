@@ -107,7 +107,6 @@ export function ContributionHeatmap({ calendar }: { calendar: ContributionCalend
     [calendar.weeks],
   );
 
-
   const monthLabels = useMemo(
     () =>
       calendar.weeks.map((week) => {
@@ -118,7 +117,6 @@ export function ContributionHeatmap({ calendar }: { calendar: ContributionCalend
       }),
     [calendar.weeks],
   );
-
 
   const onPointerMove = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
     const cell = (event.target as HTMLElement).closest<HTMLElement>("[data-day]");
@@ -154,7 +152,6 @@ export function ContributionHeatmap({ calendar }: { calendar: ContributionCalend
             : "GitHub contribution calendar"
         }
       >
-
         <div
           className="overflow-x-auto pb-1"
           onPointerMove={onPointerMove}
@@ -169,7 +166,7 @@ export function ContributionHeatmap({ calendar }: { calendar: ContributionCalend
                 "--min-cell": MIN_CELL,
               } as React.CSSProperties
             }
-            className="grid grid-cols-[var(--label-col)_repeat(var(--weeks),minmax(0,1fr))] gap-[var(--gap)] min-w-[calc(var(--label-col)+var(--weeks)*var(--min-cell)+(var(--weeks)-1)*var(--gap))] md:min-w-0"
+            className="grid min-w-[calc(var(--label-col)+var(--weeks)*var(--min-cell)+(var(--weeks)-1)*var(--gap))] grid-cols-[var(--label-col)_repeat(var(--weeks),minmax(0,1fr))] gap-[var(--gap)] md:min-w-0"
           >
             {/* Row 1: month labels, each pinned to the start of the week column it opens. */}
             {calendar.weeks.map((week, index) => (
@@ -199,7 +196,7 @@ export function ContributionHeatmap({ calendar }: { calendar: ContributionCalend
               <span
                 key={weekday}
                 style={{ gridRow: row + 2, gridColumn: 1 }}
-                className="text-muted flex h-0 self-center items-center font-mono text-[10px] leading-none"
+                className="text-muted flex h-0 items-center self-center font-mono text-[10px] leading-none"
               >
                 {LABELLED_ROWS.has(row) ? weekday : null}
               </span>
@@ -235,7 +232,6 @@ export function ContributionHeatmap({ calendar }: { calendar: ContributionCalend
           More
         </span>
       </div>
-
 
       {tooltip &&
         createPortal(
