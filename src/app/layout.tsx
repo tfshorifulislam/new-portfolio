@@ -10,7 +10,6 @@ import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { HashScrollFix } from "@/components/util/HashScrollFix";
-import { AmbientBackground } from "@/components/background/AmbientBackground";
 import { PersonJsonLd, WebSiteJsonLd } from "@/lib/seo/jsonld";
 import { SITE } from "@/lib/seo/site";
 
@@ -114,9 +113,6 @@ const RootLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
           enableSystem
           disableTransitionOnChange
         >
-          {/* Inside ThemeProvider: the canvas reads resolvedTheme for its blend mode.
-              The palette needs no provider - usePalette is an external-store hook. */}
-          <AmbientBackground />
           <main>{children}</main>
           <ScrollToTop />
         </ThemeProvider>

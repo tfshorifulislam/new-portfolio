@@ -28,8 +28,8 @@ function fadeUp(reduce: boolean, delay: number) {
 }
 
 /**
- * Viewport-scale two-line name rising out of overflow masks, over the page-wide
- * AmbientBackground, with a local scrim guaranteeing text contrast in both themes.
+ * Viewport-scale two-line name rising out of overflow masks, over the flat page
+ * background, with a local scrim guaranteeing text contrast in both themes.
  */
 export function Hero({
   profile,

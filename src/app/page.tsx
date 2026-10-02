@@ -72,7 +72,7 @@ export default async function Home() {
   const sponsorUrl = funding.find((f) => f.primary)?.url;
 
   return (
-    <>
+    <div className="max-w-[1680px] mx-auto">
       <SiteNav
         tagline={tagline}
         socials={socials.map((s) => ({ platform: s.platform, url: s.url }))}
@@ -110,6 +110,6 @@ export default async function Home() {
       <Contact socials={socials} email={contactEmail} />
 
       <Footer socials={socials} />
-    </>
+    </div>
   );
 }

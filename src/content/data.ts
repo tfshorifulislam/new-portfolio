@@ -143,7 +143,7 @@ const skillGroups: {
     category: "Frontend Development",
     items: [
       { name: "Next.js", iconPath: "/skills/nextjs.png" },
-      { name: "React.js", iconPath: "/skills/react.svg" },
+      { name: "React.js", iconPath: "/skills/react.png" },
       { name: "HTML", iconPath: "/skills/html.svg" },
       { name: "CSS", iconPath: "/skills/css.svg" },
       { name: "Tailwind CSS", iconPath: "/skills/tailwind.svg" },
@@ -154,7 +154,8 @@ const skillGroups: {
     category: "Backend Development",
     items: [
       { name: "Node.js", iconPath: "/skills/nodejs.svg" },
-      { name: "Express.js", iconPath: "/skills/express.svg" },
+      { name: "Express.js", iconPath: "/skills/express.png" },
+      { name: "NestJS", iconPath: "/skills/nestjs.png" },
       { name: "REST API", iconPath: "/skills/nodejs.svg" },
     ],
   },
@@ -162,7 +163,7 @@ const skillGroups: {
     category: "Database & ORM",
     items: [
       { name: "PostgreSQL", iconPath: "/skills/postgresql.svg" },
-      { name: "MongoDB", iconPath: "/skills/mongodb.svg" },
+      { name: "MongoDB", iconPath: "/skills/mongodb.png" },
       { name: "Prisma", iconPath: "/skills/prisma.svg" },
       { name: "Redis", iconPath: "/skills/redis.svg" },
     ],
@@ -171,7 +172,7 @@ const skillGroups: {
     category: "Tools & Technologies",
     items: [
       { name: "Git", iconPath: "/skills/git.svg" },
-      { name: "GitHub", iconPath: "/skills/github.svg" },
+      { name: "GitHub", iconPath: "/skills/github.png" },
       { name: "Docker", iconPath: "/skills/docker.png" },
       { name: "Stripe", iconPath: "/skills/stripe.svg" },
     ],
