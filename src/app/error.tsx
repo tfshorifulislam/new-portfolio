@@ -4,10 +4,6 @@ import { useEffect } from "react";
 import { RotateCw } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
-/**
- * Never renders `error.message`: it can carry connection strings, SQL or stack frames. Next
- * logs the full error server-side, so only the safe `digest` is surfaced as a reference.
- */
 export default function Error({
   error,
   reset,
