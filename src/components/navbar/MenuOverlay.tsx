@@ -11,11 +11,6 @@ export type MenuSection = { id: string; label: string };
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-/**
- * Full-screen navigation dialog: numbered display-scale section links with a
- * staggered rise-in, gradient hover/active fill, socials + status footer.
- * One paradigm for every viewport (this IS the mobile menu too).
- */
 export function MenuOverlay({
   open,
   onClose,
@@ -35,8 +30,7 @@ export function MenuOverlay({
   const closeRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // Scroll lock + focus management while open: focus moves to the close
-  // button, and returns to whatever triggered the dialog (WAI-ARIA APG).
+
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
@@ -49,7 +43,7 @@ export function MenuOverlay({
     };
   }, [open]);
 
-  // Escape closes; Tab cycles within the dialog (focus trap).
+ 
   useEffect(() => {
     if (!open) return;
     const onKeyDown = (e: KeyboardEvent) => {
@@ -86,11 +80,9 @@ export function MenuOverlay({
           animate={reduce ? undefined : { opacity: 1 }}
           exit={reduce ? undefined : { opacity: 0 }}
           transition={{ duration: 0.35 }}
-          className="site-container fixed inset-0 z-[60] flex flex-col overflow-hidden bg-(--overlay-bg) pb-6 backdrop-blur-xl sm:pb-10"
+          className="site-container fixed inset-0 z-60 flex flex-col overflow-hidden bg-(--overlay-bg) pb-6 backdrop-blur-xl sm:pb-10"
         >
-          {/* Close button sits in an h-16 row matching the nav bar exactly, so
-              it lands in the same spot as the Menu open button (no layout
-              shift / CLS between the two states). */}
+        
           <div className="flex h-16 shrink-0 items-center justify-end">
             <button
               ref={closeRef}
@@ -103,10 +95,7 @@ export function MenuOverlay({
             </button>
           </div>
 
-          {/* The list always fits in one view - no scroll. Row font-size is
-              viewport-height driven (clamp with a vh middle term), so all N
-              links + the footer stay within the screen on any device; the label
-              also clamps by width (min-w-0 truncate) as a narrow-screen guard. */}
+          
           <div className="flex min-h-0 flex-1 flex-col justify-center py-2">
             <ul className="flex flex-col gap-[clamp(6px,1.6vh,24px)]">
               {sections.map((s, i) => (
@@ -135,7 +124,7 @@ export function MenuOverlay({
                           active === s.id ? "text-(--accent-on-chip)" : "text-muted",
                         )}
                       >
-                        {/* subtle active dot - fills only for the current section */}
+                       
                         <span
                           aria-hidden
                           className={cn(
